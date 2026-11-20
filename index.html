@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Video Maker Pro</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1020;color:white;font-family:Arial,sans-serif}
+header{padding:18px;background:#151d35;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:21px;font-weight:bold;color:#8b9cff}
+button{border:0;border-radius:9px;padding:12px;background:#6558ee;color:white;font-weight:bold;cursor:pointer}
+select,textarea,input{background:#18223b;color:white;border:1px solid #354365;border-radius:9px;padding:12px;width:100%;margin-top:8px}
+main{padding:15px;max-width:650px;margin:auto}
+h2{font-size:20px}
+.welcome{background:linear-gradient(120deg,#5146d8,#9139ad);padding:20px;border-radius:15px;margin:12px 0}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:15px 0}
+.tab{background:#202b45}
+.tab.active{background:#6558ee}
+.panel{background:#151d35;padding:16px;border-radius:14px;margin:12px 0}
+.action{width:100%;margin-top:12px}
+.small{color:#aab5d0;font-size:13px;line-height:1.6}
+.preview{background:#050914;border:1px dashed #596785;border-radius:12px;min-height:180px;display:flex;align-items:center;justify-content:center;text-align:center;margin-top:12px;overflow:hidden}
+.preview img{max-width:100%;max-height:250px}
+.item{background:#202b45;padding:12px;border-radius:9px;margin:8px 0}
+footer{text-align:center;padding:25px;color:#8994ad;font-size:12px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">🎬 AI Video Maker Pro</div>
+<select id="lang" style="width:105px;margin:0" onchange="language()">
+<option value="bn">বাংলা</option>
+<option value="en">English</option>
+</select>
+</header>
+
+<main>
+<div class="welcome">
+<h2 id="welcome">আপনার AI ভিডিও তৈরি করুন!</h2>
+<p class="small" id="welcome2">আপনার কল্পনাকে ভিডিওতে রূপ দিন।</p>
+</div>
+
+<div class="tabs">
+<button class="tab active" onclick="show('text',this)">✍️ Text to Video</button>
+<button class="tab" onclick="show('image',this)">🖼️ Image to Video</button>
+<button class="tab" onclick="show('voice',this)">🎙️ AI Voice</button>
+<button class="tab" onclick="show('edit',this)">✂️ Video Editing</button>
+<button class="tab" onclick="show('history',this)">📁 History</button>
+<button class="tab" onclick="show('settings',this)">⚙️ Settings</button>
+</div>
+
+<section id="text" class="panel">
+<h2>✍️ Text to Video</h2>
+<label>আপনার ভিডিওর বর্ণনা লিখুন</label>
+<textarea id="prompt" rows="4" placeholder="যেমন: একটি সুন্দর গ্রামের দৃশ্য, সবুজ মাঠ, নদী ও সূর্যাস্ত..."></textarea>
+<label>ভিডিওর ধরন</label>
+<select id="style">
+<option>Realistic</option>
+<option>Cinematic</option>
+<option>3D Animation</option>
+<option>Cartoon</option>
+<option>Nature</option>
+<option>Islamic</option>
+<option>Funny</option>
+<option>Educational</option>
+<option>Action</option>
+<option>Travel</option>
+<option>News</option>
+<option>Motivational</option>
+</select>
+<label>ভিডিওর দৈর্ঘ্য</label>
+<select id="duration">
+<option>5 Seconds</option>
+<option>10 Seconds</option>
+<option>30 Seconds</option>
+<option>1 Minute</option>
+<option>3 Minutes</option>
+<option>5 Minutes</option>
+</select>
+<label>ভিডিওর সাইজ</label>
+<select id="ratio">
+<option>9:16 - Facebook Reels</option>
+<option>16:9 - YouTube</option>
+<option>1:1 - Square</option>
+</select>
+<button class="action" onclick="generate('text')">✨ Generate Video</button>
+</section>
+
+<section id="image" class="panel hidden">
+<h2>🖼️ Image to Video</h2>
+<p class="small">আপনার ছবি নির্বাচন করুন</p>
+<input type="file" id="photo" accept="image/*" onchange="previewImage(event)">
+<div class="preview" id="imagePreview">ছবির Preview এখানে দেখা যাবে</div>
+<textarea id="imagePrompt" rows="3" placeholder="ছবিতে কী ধরনের মুভমেন্ট চান লিখুন"></textarea>
+<button class="action" onclick="generate('image')">✨ Animate Image</button>
+</section>
+
+<section id="voice" class="panel hidden">
+<h2>🎙️ AI Voice & Music</h2>
+<textarea id="voiceText" rows="4" placeholder="আপনার ভয়েসের লেখা এখানে লিখুন"></textarea>
+<select id="voiceType">
+<option>বাংলা Voice</option>
+<option>English Voice</option>
+<option>Male Voice</option>
+<option>Female Voice</option>
+</select>
+<button class="action" onclick="alert('AI Voice চালু করতে Voice API সংযোগ প্রয়োজন।')">🎙️ Generate Voice</button>
+<hr>
+<h3>🎵 Background Music</h3>
+<select id="music">
+<option>Background Music</option>
+<option>Happy</option>
+<option>Sad</option>
+<option>Motivational</option>
+<option>Cinematic</option>
+<option>Relaxing</option>
+</select>
+</section>
+
+<section id="edit" class="panel hidden">
+<h2>✂️ Video Editing</h2>
+<input type="file" accept="video/*" id="videoFile">
+<label>ভিডিওর নাম</label>
+<input id="videoName" placeholder="ভিডিওর নাম লিখুন">
+<p class="small">ভিডিও কাটিং, ট্রিমিং, টেক্সট ও মিউজিক যুক্ত করার সুবিধা পরবর্তী সংস্করণে যুক্ত হবে।</p>
+<button class="action" onclick="alert('Video Editor সংযোগ পরবর্তী ধাপে যুক্ত হবে।')">Open Video Editor</button>
+</section>
+
+<section id="history" class="panel hidden">
+<h2>📁 Video History</h2>
+<div id="historyList">এখনো কোনো ভিডিও তৈরি করা হয়নি।</div>
+<button class="action" onclick="clearHistory()">Clear History</button>
+</section>
+
+<section id="settings" class="panel hidden">
+<h2>⚙️ Settings</h2>
+<p>App Name: AI Video Maker Pro</p>
+<p>Version: 1.0</p>
+<p>Language: বাংলা / English</p>
+<p class="small">পরবর্তী সংস্করণে API, Account, Subscription ও Download Settings যুক্ত হবে।</p>
+</section>
+
+<div class="panel">
+<h3>🎬 Video Preview</h3>
+<div class="preview" id="mainPreview">আপনার ভিডিওর Preview এখানে আসবে</div>
+<p class="small" id="status">ভিডিও তৈরির জন্য Prompt লিখুন।</p>
+</div>
+</main>
+
+<footer>AI Video Maker Pro © 2026</footer>
+
+<script>
+function show(id,btn){
+document.querySelectorAll('main section').forEach(x=>x.classList.add('hidden'));
+document.getElementById(id).classList.remove('hidden');
+document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+btn.classList.add('active');
+if(id==='history')loadHistory();
+}
+function previewImage(e){
+const f=e.target.files[0];
+if(f){
+document.getElementById('imagePreview').innerHTML='';
+const img=document.createElement('img');
+img.src=URL.createObjectURL(f);
+document.getElementById('imagePreview').appendChild(img);
+}
+}
+function generate(type){
+const p=type==='text'?document.getElementById('prompt').value:document.getElementById('imagePrompt').value;
+if(type==='text'&&!p.trim()){
+alert('আগে ভিডিওর বর্ণনা লিখুন');
+return;
+}
+if(type==='image'&&!document.getElementById('photo').files.length){
+alert('আগে একটি ছবি নির্বাচন করুন');
+return;
+}
+let list=JSON.parse(localStorage.getItem('videoHistory')||'[]');
+list.unshift({prompt:p||'Image to Video',date:new Date().toLocaleString(),style:document.getElementById('style').value});
+localStorage.setItem('videoHistory',JSON.stringify(list.slice(0,50)));
+document.getElementById('status').textContent='আপনার Prompt সংরক্ষণ হয়েছে। আসল ভিডিও তৈরির জন্য AI Video API সংযোগ প্রয়োজন।';
+document.getElementById('mainPreview').textContent='🎬 AI Video Generation API সংযোগের অপেক্ষায়';
+alert('আপনার Prompt সংরক্ষণ হয়েছে। পরবর্তী ধাপে AI ভিডিও জেনারেশন সংযোগ করব।');
+}
+function loadHistory(){
+let list=JSON.parse(localStorage.getItem('videoHistory')||'[]');
+document.getElementById('historyList').innerHTML=list.length?list.map(x=>'<div class="item"><b>'+escapeHTML(x.prompt)+'</b><p class="small">'+escapeHTML(x.date)+'</p></div>').join(''):'এখনো কোনো ভিডিও তৈরি করা হয়নি।';
+}
+function escapeHTML(s){
+return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function clearHistory(){
+if(confirm('সব History মুছে ফেলবেন?')){
+localStorage.removeItem('videoHistory');
+loadHistory();
+}
+}
+function language(){
+const en=document.getElementById('lang').value==='en';
+document.getElementById('welcome').textContent=en?'Create Your AI Videos!':'আপনার AI ভিডিও তৈরি করুন!';
+document.getElementById('welcome2').textContent=en?'Turn your imagination into videos.':'আপনার কল্পনাকে ভিডিওতে রূপ দিন।';
+}
+</script>
+</body>
+</html>
